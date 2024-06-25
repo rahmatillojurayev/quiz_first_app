@@ -39,7 +39,6 @@ public class JwtUtil {
     }
 
 
-    //
     private static final String SECRET_KEY = "2QPSlwk7xsTL69sWY873j4uYQ5JIwLCbuS8e1qFXAB04imKP6t022RhS6EObxOkij02CJ78V6JGKio9szuvLlQ";
 
     private SecretKey getKey() {

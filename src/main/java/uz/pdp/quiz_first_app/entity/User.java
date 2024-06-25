@@ -38,6 +38,16 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
+
+    @Column(name = "activation_code")
+    private Integer activationCode;
+
+    @Column(name = "active")
+    private Boolean active;
+
+    @Column(nullable = false, name = "confirm_password")
+    private String confirmPassword;
+
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
