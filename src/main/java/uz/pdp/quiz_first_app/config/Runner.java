@@ -10,16 +10,12 @@ import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.entity.enums.RoleName;
 import uz.pdp.quiz_first_app.repo.RoleRepository;
 import uz.pdp.quiz_first_app.repo.UserRepository;
-import uz.pdp.quiz_first_app.security.JwtUtil;
-
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class Runner implements CommandLineRunner {
 
-
-    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
@@ -28,11 +24,12 @@ public class Runner implements CommandLineRunner {
     private String ddl;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (ddl.equals("create")) {
             generateUsers();
         }
     }
+
     private void generateUsers() {
         Role role = Role.builder()
                 .id(1)
@@ -60,4 +57,5 @@ public class Runner implements CommandLineRunner {
                 .build();
         userRepository.save(user1);
     }
+
 }

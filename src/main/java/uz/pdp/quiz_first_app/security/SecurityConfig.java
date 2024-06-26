@@ -27,7 +27,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("USER")
                         .requestMatchers("/api/user/**").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated()
                 )
@@ -36,12 +36,10 @@ public class SecurityConfig {
                                 .rememberMeParameter("remember-me")
                                 .tokenValiditySeconds(604800)
                 )
-                .logout(logout -> {
-                    logout
-                            .logoutUrl("/logout")
-                            .logoutSuccessUrl("/login")
-                            .permitAll();
-                })
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .permitAll())
                 .logout(LogoutConfigurer::permitAll)
                 .csrf(AbstractHttpConfigurer::disable);
 
@@ -65,9 +63,9 @@ public class SecurityConfig {
         return provider;
     }
 
-
     @Bean
     public AuthenticationManager authenticationManager(){
         return new ProviderManager(userAuthProvider());
     }
+
 }

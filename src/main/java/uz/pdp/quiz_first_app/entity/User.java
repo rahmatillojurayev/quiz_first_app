@@ -13,7 +13,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -69,4 +68,5 @@ public class User implements UserDetails {
     public String getUsername() {
         return email;
     }
+
 }
