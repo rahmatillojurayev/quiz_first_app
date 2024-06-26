@@ -18,8 +18,6 @@ public class EmailService {
     private JavaMailSender emailSender;
     private final UserRepository userRepository;
 
-
-
     public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
@@ -35,4 +33,5 @@ public class EmailService {
             sendSimpleMessage(user.getEmail(), "Confirm code", "Confirm code: " + user.getActivationCode());
             userRepository.save(user);
     }
+
 }

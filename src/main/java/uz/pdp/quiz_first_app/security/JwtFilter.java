@@ -24,16 +24,17 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authorization = request.getHeader("Authorization");
         if (authorization != null && authorization.startsWith("Bearer ")) {
-            String token = authorization.substring(7);
+            String token = authorization.substring(7).trim();
             if (jwtUtil.validateToken(token)) {
-                String userName = jwtUtil.getUserName(token);
+                String username = jwtUtil.getUserName(token);
                 List<GrantedAuthority> roles = jwtUtil.getRoles(token);
                 var auth = new UsernamePasswordAuthenticationToken(
-                        userName, null, roles
+                        username, null, roles
                 );
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
         filterChain.doFilter(request, response);
     }
+
 }

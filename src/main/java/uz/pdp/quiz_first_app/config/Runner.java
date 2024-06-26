@@ -18,8 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Runner implements CommandLineRunner {
 
-
-    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
@@ -33,6 +31,7 @@ public class Runner implements CommandLineRunner {
             generateUsers();
         }
     }
+
     private void generateUsers() {
         Role role = Role.builder()
                 .id(1)
@@ -60,4 +59,5 @@ public class Runner implements CommandLineRunner {
                 .build();
         userRepository.save(user1);
     }
+
 }

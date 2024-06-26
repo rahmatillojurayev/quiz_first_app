@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.repo.UserRepository;
-
 import java.util.Optional;
 
 @RestController
@@ -19,8 +18,7 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-
-    @GetMapping("home")
+    @GetMapping("/home")
     public String home() {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> user =  userRepository.findByEmail(email);
@@ -34,7 +32,6 @@ public class UserController {
             return "Your account is not registered";
         }
     }
-
 
     @GetMapping("/me")
     public Optional<User> getUser() {
