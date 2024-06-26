@@ -11,6 +11,7 @@ public class LanguageInterceptor implements HandlerInterceptor {
 
     private static final String LANGUAGE_HEADER = "Accept-Language";
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
@@ -22,4 +23,5 @@ public class LanguageInterceptor implements HandlerInterceptor {
         }
         return true;
     }
+
 }

@@ -21,12 +21,11 @@ public class UserController {
     @GetMapping("/home")
     public String home() {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<User> user =  userRepository.findByEmail(email);
-        if (user.get().getActive()) {
+        User user =  userRepository.findByEmail(email).orElseThrow();
+        if (user.getActive()) {
             return "Welcome";
         } else {
-            User user1 = user.get();
-            userRepository.delete(user1);
+            userRepository.delete(user);
             SecurityContextHolder.clearContext();
             SecurityContextHolder.getContext().setAuthentication(null);
             return "Your account is not registered";

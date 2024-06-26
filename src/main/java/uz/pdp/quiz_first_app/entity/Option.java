@@ -11,9 +11,10 @@ import lombok.*;
 @Builder
 @Table(name = "option")
 public class Option {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private Integer id;
 
     @Column(name = "is_correct")

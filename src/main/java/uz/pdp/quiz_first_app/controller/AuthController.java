@@ -1,6 +1,5 @@
 package uz.pdp.quiz_first_app.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -18,8 +17,8 @@ import uz.pdp.quiz_first_app.service.UserService;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;

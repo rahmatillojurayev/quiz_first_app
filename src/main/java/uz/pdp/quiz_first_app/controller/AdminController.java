@@ -24,4 +24,5 @@ public class AdminController {
         String message = messageSource.getMessage("test", null, locale);
         return ResponseEntity.ok(message);
     }
+
 }

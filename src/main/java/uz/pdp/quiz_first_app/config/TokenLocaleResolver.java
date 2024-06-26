@@ -15,12 +15,14 @@ public class TokenLocaleResolver implements LocaleResolver {
     private final JwtUtil jwtUtil;
     private static final String DEFAULT_LANGUAGE = "en";
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public Locale resolveLocale(HttpServletRequest request) {
         String language = extractLanguageFromToken(request);
         return (language != null) ? Locale.forLanguageTag(language) : Locale.forLanguageTag(DEFAULT_LANGUAGE);
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public void setLocale(HttpServletRequest request, HttpServletResponse response, Locale locale) {
         LocaleContextHolder.setLocale(locale);

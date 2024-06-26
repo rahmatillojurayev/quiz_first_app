@@ -13,16 +13,17 @@ import uz.pdp.quiz_first_app.entity.enums.RoleName;
 @Builder
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
+
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private Integer id;
 
     @Enumerated(EnumType.STRING)
     private RoleName roleName;
 
-
     @Override
     public String getAuthority() {
         return this.roleName.toString();
     }
+
 }

@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.repo.UserRepository;
-
 import java.util.Optional;
 
 @Service

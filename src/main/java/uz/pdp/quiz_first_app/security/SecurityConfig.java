@@ -36,12 +36,10 @@ public class SecurityConfig {
                                 .rememberMeParameter("remember-me")
                                 .tokenValiditySeconds(604800)
                 )
-                .logout(logout -> {
-                    logout
-                            .logoutUrl("/logout")
-                            .logoutSuccessUrl("/login")
-                            .permitAll();
-                })
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login")
+                        .permitAll())
                 .logout(LogoutConfigurer::permitAll)
                 .csrf(AbstractHttpConfigurer::disable);
 

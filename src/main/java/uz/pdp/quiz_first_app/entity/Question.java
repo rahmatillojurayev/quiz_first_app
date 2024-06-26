@@ -3,7 +3,6 @@ package uz.pdp.quiz_first_app.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.util.List;
 
 @Getter
@@ -11,6 +10,7 @@ import java.util.List;
 @Entity
 @Table(name = "question")
 public class Question {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -31,6 +31,5 @@ public class Question {
 
     @OneToMany(mappedBy = "question")
     private List<Option> options;
-
 
 }
