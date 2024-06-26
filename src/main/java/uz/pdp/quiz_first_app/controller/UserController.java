@@ -20,7 +20,7 @@ public class UserController {
     }
 
 
-    @GetMapping("home")
+    @GetMapping("/home")
     public String home() {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> user =  userRepository.findByEmail(email);

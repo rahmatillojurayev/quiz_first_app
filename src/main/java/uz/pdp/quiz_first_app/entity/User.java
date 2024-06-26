@@ -24,12 +24,10 @@ public class User implements UserDetails {
     @Column(name = "id", nullable = false)
     private UUID id;
 
-    @Column(name = "first_name")
-    private String firstName;
+    @Column(name = "user_name")
+    private String userName;
 
-    @Column(name = "last_name")
-    private String lastName;
-
+    private String photoPath;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -37,7 +35,6 @@ public class User implements UserDetails {
     @JsonIgnore
     @Column(nullable = false)
     private String password;
-
 
     @Column(name = "activation_code")
     private Integer activationCode;
@@ -47,6 +44,13 @@ public class User implements UserDetails {
 
     @Column(nullable = false, name = "confirm_password")
     private String confirmPassword;
+
+    @Column(name = "score")
+    private Integer score;
+
+
+
+
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
