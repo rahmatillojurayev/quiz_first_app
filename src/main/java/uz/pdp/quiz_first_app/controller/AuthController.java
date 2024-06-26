@@ -46,9 +46,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody RegisterDTO registerDTO) {
-        if (!registerDTO.getPassword().equals(registerDTO.getConfirmPassword())) {
-            return ResponseEntity.status(400).body("Passwords do not match");
-        }else if (userService.register(registerDTO)) {
+        if (userService.register(registerDTO)) {
             return ResponseEntity.ok("You have successfully registered. Check email confirm code");
         }else {
             return ResponseEntity.status(400).body("Username already exists");
