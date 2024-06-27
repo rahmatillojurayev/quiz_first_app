@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import uz.pdp.quiz_first_app.dto.RegisterDTO;
 import javax.crypto.SecretKey;
 import java.util.Arrays;
 import java.util.Date;
@@ -80,6 +81,31 @@ public class JwtUtil {
                 .claim("roles", roles)
                 .claim("lang", lang)
                 .compact();
+    }
+
+    public String generateRegistrationToken(RegisterDTO registerDTO) {
+        return Jwts.builder()
+                .subject(registerDTO.getEmail())
+                .claim("confirmationCode", registerDTO.getActivationCode().toString())
+                .claim("password", registerDTO.getPassword())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY))
+                .signWith(getKey())
+                .compact();
+    }
+
+    public String getConfirmationCodeFromToken(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("confirmationCode", String.class);
+    }
+
+    public String getEmailFromToken(String token) {
+        return getClaims(token).getSubject();
+    }
+
+    public String getPasswordFromToken(String token) {
+        Claims claims = getClaims(token);
+        return claims.get("password", String.class);
     }
 
 }

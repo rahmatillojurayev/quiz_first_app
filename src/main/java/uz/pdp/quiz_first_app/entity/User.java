@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -18,13 +17,13 @@ import java.util.UUID;
 @Builder
 @Table(name = "users")
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     private UUID id;
 
-    @Column(name = "user_name")
-    private String userName;
+    private String username;
 
     private String photoPath;
 
@@ -35,21 +34,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "activation_code")
-    private Integer activationCode;
-
-    @Column(name = "active")
-    private Boolean active;
-
-    @Column(nullable = false, name = "confirm_password")
-    private String confirmPassword;
-
     @Column(name = "score")
     private Integer score;
-
-
-
-
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
@@ -57,11 +43,6 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
     }
 
     @Override

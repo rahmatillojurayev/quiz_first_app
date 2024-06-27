@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import uz.pdp.quiz_first_app.entity.User;
-import uz.pdp.quiz_first_app.repo.UserRepository;
+import uz.pdp.quiz_first_app.dto.RegisterDTO;
 import java.util.Random;
 
 @Service
@@ -13,22 +12,19 @@ import java.util.Random;
 public class EmailService {
 
     private final JavaMailSender emailSender;
-    private final UserRepository userRepository;
 
-    public void sendSimpleMessage(String to, String subject, String text) {
+    private void sendSimpleMessage(String to, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
-        message.setSubject(subject);
+        message.setSubject("Confirm code");
         message.setText(text);
         emailSender.send(message);
     }
 
-    // Send email with confirm code to user
-    public void sendEmailConfirmCode(User user) {
-            Random random = new Random();
-            user.setActivationCode(random.nextInt(9000) + 1000);
-            sendSimpleMessage(user.getEmail(), "Confirm code", "Confirm code: " + user.getActivationCode());
-            userRepository.save(user);
+    public void sendEmailConfirmCode(RegisterDTO registerDTO) {
+        Random random = new Random();
+        registerDTO.setActivationCode(random.nextInt(1_000, 10_000));
+        sendSimpleMessage(registerDTO.getEmail(), "Confirmation code: " + registerDTO.getActivationCode());
     }
 
 }
