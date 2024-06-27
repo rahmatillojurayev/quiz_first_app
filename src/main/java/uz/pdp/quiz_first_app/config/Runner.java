@@ -44,7 +44,6 @@ public class Runner implements CommandLineRunner {
         User user = User.builder()
                 .email("admin")
                 .password(passwordEncoder.encode("123"))
-                .confirmPassword(passwordEncoder.encode("123"))
                 .roles(List.of(role))
                 .build();
         userRepository.save(user);
@@ -52,7 +51,6 @@ public class Runner implements CommandLineRunner {
         User user1 = User.builder()
                 .email("user")
                 .password(passwordEncoder.encode("123"))
-                .confirmPassword(passwordEncoder.encode("123"))
                 .roles(List.of(role1))
                 .build();
         userRepository.save(user1);
