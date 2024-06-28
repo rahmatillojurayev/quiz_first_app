@@ -42,14 +42,14 @@ public class Runner implements CommandLineRunner {
         roleRepository.save(role);
         roleRepository.save(role1);
         User user = User.builder()
-                .email("admin")
+                .email("a@gmail.com")
                 .password(passwordEncoder.encode("123"))
                 .roles(List.of(role))
                 .build();
         userRepository.save(user);
 
         User user1 = User.builder()
-                .email("user")
+                .email("u@gmail.com")
                 .password(passwordEncoder.encode("123"))
                 .roles(List.of(role1))
                 .build();

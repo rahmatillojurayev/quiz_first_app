@@ -1,6 +1,7 @@
 package uz.pdp.quiz_first_app.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +23,9 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public Optional<User> getUser() {
+    public ResponseEntity<?> getUser() {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return userRepository.findByEmail(email);
+        return ResponseEntity.ok(userRepository.findByEmail(email).get());
     }
 
 }

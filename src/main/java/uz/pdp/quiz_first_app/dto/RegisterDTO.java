@@ -7,7 +7,6 @@ public class RegisterDTO {
 
     private String email;
     private String password;
-    private String confirmPassword;
     private Integer activationCode;
 
 }

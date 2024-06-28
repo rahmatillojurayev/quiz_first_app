@@ -25,10 +25,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public ResponseEntity<?> registerService(RegisterDTO registerDTO) {
-        if (!registerDTO.getPassword().equals(registerDTO.getConfirmPassword())) {
-            String message = messageService.getMessage("passwords.do.not.match");
-            return ResponseEntity.status(400).body(message);
-        }else if (userRepository.existsByEmail(registerDTO.getEmail())) {
+        if (userRepository.existsByEmail(registerDTO.getEmail())) {
             String message = messageService.getMessage("user.already.exists");
             return ResponseEntity.status(400).body(message);
         }else{
