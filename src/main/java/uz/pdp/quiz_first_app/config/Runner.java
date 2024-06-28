@@ -8,17 +8,19 @@ import org.springframework.stereotype.Component;
 import uz.pdp.quiz_first_app.entity.Role;
 import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.entity.enums.RoleName;
-import uz.pdp.quiz_first_app.repo.RoleRepository;
-import uz.pdp.quiz_first_app.repo.UserRepository;
+import uz.pdp.quiz_first_app.repo.RoleRepo;
+import uz.pdp.quiz_first_app.repo.UserRepo;
+import uz.pdp.quiz_first_app.util.DataInitializationService;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class Runner implements CommandLineRunner {
 
-    private final UserRepository userRepository;
+    private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
-    private final RoleRepository roleRepository;
+    private final RoleRepo roleRepo;
+    private final DataInitializationService dataInitializationService;
 
     @Value("${spring.jpa.hibernate.ddl-auto}")
     private String ddl;
@@ -27,6 +29,7 @@ public class Runner implements CommandLineRunner {
     public void run(String... args) {
         if (ddl.equals("create")) {
             generateUsers();
+            dataInitializationService.initializeData();
         }
     }
 
@@ -39,21 +42,21 @@ public class Runner implements CommandLineRunner {
                 .id(2)
                 .roleName(RoleName.ROLE_USER)
                 .build();
-        roleRepository.save(role);
-        roleRepository.save(role1);
+        roleRepo.save(role);
+        roleRepo.save(role1);
         User user = User.builder()
                 .email("a@gmail.com")
                 .password(passwordEncoder.encode("123"))
                 .roles(List.of(role))
                 .build();
-        userRepository.save(user);
+        userRepo.save(user);
 
         User user1 = User.builder()
                 .email("u@gmail.com")
                 .password(passwordEncoder.encode("123"))
                 .roles(List.of(role1))
                 .build();
-        userRepository.save(user1);
+        userRepo.save(user1);
     }
 
 }

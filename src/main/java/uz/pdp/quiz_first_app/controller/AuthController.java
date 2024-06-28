@@ -30,22 +30,16 @@ public class AuthController {
         return authService.confirmVerification(token, confirmationDTO);
     }
 
-    @PostMapping("/forget_password")
+    @PostMapping("/forget-password")
     public ResponseEntity<?> refreshToken(@RequestBody RegisterDTO registerDTO) {
         return authService.forgetPassword(registerDTO);
     }
 
-    @PostMapping("/reset_password_confirm")
+    @PostMapping("/forget-password-confirm")
     public ResponseEntity<?> resetPassword(
             @RequestHeader("Reset-password-token") String token,
             @RequestBody ResetPasswordDTO resetPasswordDTO) {
         return authService.resetPassword(token, resetPasswordDTO);
-    }
-
-    @PostMapping("/reset_new_password")
-    public ResponseEntity<?> refreshToken(@RequestHeader("Reset-email-token") String emailToken,
-                                          @RequestBody ForgetConfirmDTO forgetConfirmDTO) {
-        return authService.resetNewPassword(emailToken, forgetConfirmDTO);
     }
 
 }

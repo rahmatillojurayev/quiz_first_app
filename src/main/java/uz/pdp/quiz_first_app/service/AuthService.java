@@ -8,9 +8,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.pdp.quiz_first_app.dto.*;
-import uz.pdp.quiz_first_app.repo.UserRepository;
+import uz.pdp.quiz_first_app.entity.User;
+import uz.pdp.quiz_first_app.repo.UserRepo;
 import uz.pdp.quiz_first_app.security.JwtUtil;
 
 @Service
@@ -18,17 +20,18 @@ import uz.pdp.quiz_first_app.security.JwtUtil;
 public class AuthService {
 
     private final JwtUtil jwtUtil;
-    private final UserRepository userRepository;
+    private final UserRepo userRepo;
     private final EmailService emailService;
     private final MessageService messageService;
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<?> registerService(RegisterDTO registerDTO) {
-        if (userRepository.existsByEmail(registerDTO.getEmail())) {
+        if (userRepo.existsByEmail(registerDTO.getEmail())) {
             String message = messageService.getMessage("user.already.exists");
             return ResponseEntity.status(400).body(message);
-        }else{
+        } else {
             emailService.sendEmailConfirmCode(registerDTO);
             String token = jwtUtil.generateRegistrationToken(registerDTO);
             String message = messageService.getMessage("verification.code.sent");
@@ -43,7 +46,7 @@ public class AuthService {
             String message = messageService.getMessage("verification.confirm.success");
             userService.saveUser(token);
             return ResponseEntity.ok().body(message);
-        }else{
+        } else {
             String message = messageService.getMessage("verification.confirm.failed");
             return ResponseEntity.status(400).body(message);
         }
@@ -67,39 +70,35 @@ public class AuthService {
     }
 
     public ResponseEntity<?> forgetPassword(RegisterDTO registerDTO) {
-        if (!userRepository.existsByEmail(registerDTO.getEmail())) {
-            String message = messageService.getMessage("user.not.found");
+        if (!userRepo.existsByEmail(registerDTO.getEmail())) {
+            String message = messageService.getMessage("email.not.found");
             return ResponseEntity.status(400).body(message);
+        } else {
+            emailService.sendEmailConfirmCode(registerDTO);
+            String message = messageService.getMessage("verification.code.sent");
+            String token = jwtUtil.generateForgetPasswordToken(registerDTO);
+            return ResponseEntity.ok().body(new RegisterResponse(message, token));
         }
-        emailService.sendEmailConfirmCode(registerDTO);
-        String message = messageService.getMessage("forget.password.email.sent");
-        String token = jwtUtil.generateRegistrationToken(registerDTO);
-        return ResponseEntity.ok().body(new RegisterResponse(message, token));
     }
 
     public ResponseEntity<?> resetPassword(String token, ResetPasswordDTO resetPasswordDTO) {
         String actualCode = jwtUtil.getConfirmationCodeFromToken(token);
-        String email = jwtUtil.getEmailFromToken(token);
-        if (actualCode.equals(resetPasswordDTO.getVerificationCode()) && resetPasswordDTO.getEmail().equals(email)) {
-            String generatedEmail = jwtUtil.generateEmail(email);
-            String message = messageService.getMessage("reset.code.success");
-            return ResponseEntity.ok().body(new RegisterResponse(message, generatedEmail));
-        }else{
-            String message = messageService.getMessage("reset.code.failed");
+        String emailFromToken = jwtUtil.getEmailFromToken(token);
+        if (actualCode.equals(resetPasswordDTO.getVerificationCode()) && resetPasswordDTO.getEmail().equals(emailFromToken)) {
+            User user = userRepo.findByEmail(emailFromToken).orElseThrow();
+            if (passwordEncoder.matches(resetPasswordDTO.getNewPassword(), user.getPassword())) {
+                String message = messageService.getMessage("new.password.must.not.be.similar");
+                return ResponseEntity.status(400).body(message);
+            } else {
+                String message = messageService.getMessage("reset.password.success");
+                userService.editUserPassword(emailFromToken, resetPasswordDTO.getNewPassword());
+                return ResponseEntity.ok().body(message);
+            }
+        } else {
+            String message = messageService.getMessage("reset.password.fail");
             return ResponseEntity.status(400).body(message);
         }
     }
 
-    public ResponseEntity<?> resetNewPassword(String emailToken, ForgetConfirmDTO forgetConfirmDTO) {
-        String email = jwtUtil.getEmailFromToken(emailToken);
-       if (forgetConfirmDTO.getEmail().equals(email)) {
-           userService.resetPassword(emailToken, forgetConfirmDTO);
-           ResponseEntity<?> responseEntity = logInAndReturnToken(new LoginDTO(email, forgetConfirmDTO.getNewPassword()));
-           return ResponseEntity.ok().body(responseEntity);
-       }else{
-           String message = messageService.getMessage("password.reset.failed");
-           return ResponseEntity.status(400).body(message);
-       }
 
-    }
 }

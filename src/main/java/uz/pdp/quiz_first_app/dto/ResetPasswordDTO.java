@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResetPasswordDTO {
+
     private String email;
     private String verificationCode;
     private String newPassword;
+
 }

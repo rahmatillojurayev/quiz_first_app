@@ -20,7 +20,6 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(nullable = false)
     private UUID id;
 
     private String username;
@@ -34,7 +33,6 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "score")
     private Integer score;
 
     @ManyToMany(fetch = FetchType.EAGER)

@@ -6,16 +6,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uz.pdp.quiz_first_app.entity.User;
-import uz.pdp.quiz_first_app.repo.UserRepository;
-import java.util.Optional;
+import uz.pdp.quiz_first_app.repo.UserRepo;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserRepo userRepo;
 
     @GetMapping("/home")
     public String home() {
@@ -25,7 +23,7 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<?> getUser() {
         String email = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return ResponseEntity.ok(userRepository.findByEmail(email).get());
+        return ResponseEntity.ok(userRepo.findByEmail(email).orElseThrow());
     }
 
 }

@@ -5,7 +5,7 @@ import uz.pdp.quiz_first_app.entity.User;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface UserRepository extends JpaRepository<User, UUID> {
+public interface UserRepo extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmail(String username);
 
