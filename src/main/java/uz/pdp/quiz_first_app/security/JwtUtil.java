@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 public class JwtUtil {
 
     private static final String SECRET_KEY = "1234567812345678123456781234567812345678123456781234567812345678";
-    private static final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 60; // 1 hour
-    private static final long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24; // 24 hours
+    private static final long ACCESS_TOKEN_VALIDITY = 2000 * 60; // 1 hour
+    private static final long REFRESH_TOKEN_VALIDITY = 1000 * 60; // 1 minutes
 
     public boolean validateToken(String token) {
         try {
@@ -108,4 +108,11 @@ public class JwtUtil {
         return claims.get("password", String.class);
     }
 
+    public String generateEmail(String email) {
+        return Jwts.builder()
+                .subject(email)
+                .claim("email", email)
+                .signWith(getKey())
+                .compact();
+    }
 }

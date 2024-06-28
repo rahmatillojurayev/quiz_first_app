@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import uz.pdp.quiz_first_app.dto.ForgetConfirmDTO;
 import uz.pdp.quiz_first_app.dto.TokenDTO;
 import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.entity.enums.RoleName;
@@ -13,6 +14,7 @@ import uz.pdp.quiz_first_app.repo.UserRepository;
 import uz.pdp.quiz_first_app.security.CustomUserDetailsService;
 import uz.pdp.quiz_first_app.security.JwtUtil;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,4 +46,13 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void resetPassword(String emailToken, ForgetConfirmDTO forgetConfirmDTO) {
+        String email = jwtUtil.getEmailFromToken(emailToken);
+        Optional<User> currentUser = userRepository.findByEmail(email);
+        if (currentUser.isPresent()) {
+           User user = currentUser.get();
+           user.setPassword(passwordEncoder.encode(forgetConfirmDTO.getNewPassword()));
+           userRepository.save(user);
+        }
+    }
 }

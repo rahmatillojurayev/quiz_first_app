@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class RegisterResponse {
 
     String message;
-
     String token;
 
 }

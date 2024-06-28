@@ -66,4 +66,40 @@ public class AuthService {
         }
     }
 
+    public ResponseEntity<?> forgetPassword(RegisterDTO registerDTO) {
+        if (!userRepository.existsByEmail(registerDTO.getEmail())) {
+            String message = messageService.getMessage("user.not.found");
+            return ResponseEntity.status(400).body(message);
+        }
+        emailService.sendEmailConfirmCode(registerDTO);
+        String message = messageService.getMessage("forget.password.email.sent");
+        String token = jwtUtil.generateRegistrationToken(registerDTO);
+        return ResponseEntity.ok().body(new RegisterResponse(message, token));
+    }
+
+    public ResponseEntity<?> resetPassword(String token, ResetPasswordDTO resetPasswordDTO) {
+        String actualCode = jwtUtil.getConfirmationCodeFromToken(token);
+        String email = jwtUtil.getEmailFromToken(token);
+        if (actualCode.equals(resetPasswordDTO.getVerificationCode()) && resetPasswordDTO.getEmail().equals(email)) {
+            String generatedEmail = jwtUtil.generateEmail(email);
+            String message = messageService.getMessage("reset.code.success");
+            return ResponseEntity.ok().body(new RegisterResponse(message, generatedEmail));
+        }else{
+            String message = messageService.getMessage("reset.code.failed");
+            return ResponseEntity.status(400).body(message);
+        }
+    }
+
+    public ResponseEntity<?> resetNewPassword(String emailToken, ForgetConfirmDTO forgetConfirmDTO) {
+        String email = jwtUtil.getEmailFromToken(emailToken);
+       if (forgetConfirmDTO.getEmail().equals(email)) {
+           userService.resetPassword(emailToken, forgetConfirmDTO);
+           ResponseEntity<?> responseEntity = logInAndReturnToken(new LoginDTO(email, forgetConfirmDTO.getNewPassword()));
+           return ResponseEntity.ok().body(responseEntity);
+       }else{
+           String message = messageService.getMessage("password.reset.failed");
+           return ResponseEntity.status(400).body(message);
+       }
+
+    }
 }
