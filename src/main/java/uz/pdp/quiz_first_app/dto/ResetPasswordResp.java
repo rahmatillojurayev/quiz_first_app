@@ -7,8 +7,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ForgetConfirmDTO {
+public class ResetPasswordResp {
 
-    String email;
-    String newPassword;
+    private String message;
+
+    private String resetPasswordToken;
+
 }

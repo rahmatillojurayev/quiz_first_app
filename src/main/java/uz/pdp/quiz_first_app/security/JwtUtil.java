@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import uz.pdp.quiz_first_app.dto.RegisterDTO;
+import uz.pdp.quiz_first_app.dto.RegisterReq;
 import javax.crypto.SecretKey;
 import java.util.Arrays;
 import java.util.Date;
@@ -83,11 +83,11 @@ public class JwtUtil {
                 .compact();
     }
 
-    public String generateRegistrationToken(RegisterDTO registerDTO) {
+    public String generateRegistrationToken(RegisterReq registerReq, Integer code) {
         return Jwts.builder()
-                .subject(registerDTO.getEmail())
-                .claim("confirmationCode", registerDTO.getActivationCode().toString())
-                .claim("password", registerDTO.getPassword())
+                .subject(registerReq.getEmail())
+                .claim("confirmationCode", code.toString())
+                .claim("password", registerReq.getPassword())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY))
                 .signWith(getKey())
@@ -108,10 +108,19 @@ public class JwtUtil {
         return claims.get("password", String.class);
     }
 
-    public String generateForgetPasswordToken(RegisterDTO registerDTO) {
+    public String generateForgetPasswordToken(String email, Integer code) {
         return Jwts.builder()
-                .subject(registerDTO.getEmail())
-                .claim("confirmationCode", registerDTO.getActivationCode().toString())
+                .subject(email)
+                .claim("confirmationCode", code.toString())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY))
+                .signWith(getKey())
+                .compact();
+    }
+
+    public String generateResetPasswordToken(String email) {
+        return Jwts.builder()
+                .subject(email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY))
                 .signWith(getKey())

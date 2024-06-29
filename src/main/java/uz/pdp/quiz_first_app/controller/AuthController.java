@@ -19,27 +19,35 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterDTO registerDTO) {
-        return authService.registerService(registerDTO);
+    public ResponseEntity<?> register(@RequestBody RegisterReq registerReq) {
+        return authService.registerService(registerReq);
     }
 
     @PostMapping("/confirm")
-    public ResponseEntity<String> confirm(
+    public ResponseEntity<?> confirm(
             @RequestHeader("Registration-token") String token,
             @RequestBody ConfirmationDTO confirmationDTO) {
         return authService.confirmVerification(token, confirmationDTO);
     }
 
     @PostMapping("/forget-password")
-    public ResponseEntity<?> refreshToken(@RequestBody RegisterDTO registerDTO) {
-        return authService.forgetPassword(registerDTO);
+    public ResponseEntity<?> refreshToken(@RequestBody EmailDTO email) {
+        return authService.forgetPassword(email);
     }
 
     @PostMapping("/forget-password-confirm")
-    public ResponseEntity<?> resetPassword(
+    public ResponseEntity<?> resetPasswordConfirmation(
             @RequestHeader("Reset-password-token") String token,
             @RequestBody ResetPasswordDTO resetPasswordDTO) {
-        return authService.resetPassword(token, resetPasswordDTO);
+        return authService.resetPasswordConfirm(token, resetPasswordDTO);
+    }
+
+    @PostMapping("/update-password")
+    public ResponseEntity<?> resetPassword(
+            @RequestHeader("Reset-email-token") String token,
+            @RequestBody PasswordDTO newPassword
+    ) {
+        return authService.resetPasswordAndUpdate(token, newPassword);
     }
 
 }

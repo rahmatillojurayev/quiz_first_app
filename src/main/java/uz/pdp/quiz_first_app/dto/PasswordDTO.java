@@ -3,10 +3,8 @@ package uz.pdp.quiz_first_app.dto;
 import lombok.Data;
 
 @Data
-public class RegisterDTO {
+public class PasswordDTO {
 
-    private String email;
     private String password;
-    private Integer activationCode;
 
 }
