@@ -74,4 +74,7 @@ public class UserService {
         return ResponseEntity.ok(message);
     }
 
+    public List<User> getAllUsers() {
+        return userRepo.findAllByIsStartedIsTrue();
+    }
 }

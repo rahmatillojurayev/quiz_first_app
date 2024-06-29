@@ -1,19 +1,31 @@
 package uz.pdp.quiz_first_app.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.quiz_first_app.entity.MultiPlayer;
+import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.service.MultiPlayerService;
+import uz.pdp.quiz_first_app.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/multiplayer")
+@RequiredArgsConstructor
 public class MultiPlayerController {
 
-    @Autowired
-    private MultiPlayerService multiPlayerService;
+    private final MultiPlayerService multiPlayerService;
+    private final UserService userService;
+
+
+    @GetMapping("/start")
+    public ResponseEntity<List<User>> getAllGames() {
+        List<User> games = userService.getAllUsers();
+        return ResponseEntity.ok(games);
+    }
 
     @PostMapping("/create")
     public ResponseEntity<MultiPlayer> createGame(@RequestBody MultiPlayer multiPlayer) {

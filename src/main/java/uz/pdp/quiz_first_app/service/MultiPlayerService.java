@@ -1,19 +1,26 @@
 package uz.pdp.quiz_first_app.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uz.pdp.quiz_first_app.entity.MultiPlayer;
 import uz.pdp.quiz_first_app.repo.MultiPlayerRepository;
+import uz.pdp.quiz_first_app.repo.UserRepo;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class MultiPlayerService {
 
     @Autowired
     private MultiPlayerRepository multiPlayerRepository;
+    private final UserRepo userRepo;
 
     public MultiPlayer createGame(MultiPlayer multiPlayer) {
+
+        // Check if the owner and opponent exist
         return multiPlayerRepository.save(multiPlayer);
     }
 
@@ -37,5 +44,9 @@ public class MultiPlayerService {
         } else {
             // Draw
         }
+    }
+
+    public List<MultiPlayer> getAllGames() {
+        return multiPlayerRepository.findAll();
     }
 }
