@@ -3,6 +3,8 @@ package uz.pdp.quiz_first_app.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.quiz_first_app.entity.MultiPlayer;
 import uz.pdp.quiz_first_app.entity.User;
@@ -22,9 +24,10 @@ public class MultiPlayerController {
 
 
     @GetMapping("/start")
-    public ResponseEntity<List<User>> getAllGames() {
-        List<User> games = userService.getAllUsers();
-        return ResponseEntity.ok(games);
+    public ResponseEntity<?> getAllGames() {
+        userService.updateUser();
+        User game = userService.getStartedUserTrue();
+        return ResponseEntity.ok(game);
     }
 
     @PostMapping("/create")

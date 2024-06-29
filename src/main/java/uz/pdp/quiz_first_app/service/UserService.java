@@ -18,6 +18,8 @@ import uz.pdp.quiz_first_app.repo.UserRepo;
 import uz.pdp.quiz_first_app.security.CustomUserDetailsService;
 import uz.pdp.quiz_first_app.security.JwtUtil;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -73,8 +75,27 @@ public class UserService {
         String message = messageService.getMessage("username.edited");
         return ResponseEntity.ok(message);
     }
+    
 
-    public List<User> getAllUsers() {
+
+    public void updateUser() {
+        String email = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepo.findByEmail(email).orElseThrow();
+        user.setIsStarted(true);
+        userRepo.save(user);
+    }
+
+    public List<User> getAllUsersWhoStartedGames() {
         return userRepo.findAllByIsStartedIsTrue();
+    }
+
+    public User getStartedUserTrue() {
+        List<User> startedUsers = getAllUsersWhoStartedGames();
+        if (startedUsers.isEmpty()) {
+            return null;
+        }
+        Random random = new Random();
+        int randomIndex = random.nextInt(startedUsers.size());
+        return startedUsers.get(randomIndex);
     }
 }
