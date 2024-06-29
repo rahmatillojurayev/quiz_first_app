@@ -36,6 +36,8 @@ public class User implements UserDetails {
     private Integer score;
 
     private Boolean isStarted = false;
+    private Boolean isFinished = false;
+    private Boolean isConnected = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;

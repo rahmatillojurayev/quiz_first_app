@@ -19,8 +19,6 @@ public class MultiPlayerService {
     private final UserRepo userRepo;
 
     public MultiPlayer createGame(MultiPlayer multiPlayer) {
-
-        // Check if the owner and opponent exist
         return multiPlayerRepository.save(multiPlayer);
     }
 
@@ -37,12 +35,15 @@ public class MultiPlayerService {
     }
 
     public void determineWinner(MultiPlayer multiPlayer) {
-        if (multiPlayer.getScore() > multiPlayer.getOpponent().getScore()) {
-            // Owner wins
-        } else if (multiPlayer.getScore() < multiPlayer.getOpponent().getScore()) {
-            // Opponent wins
-        } else {
-            // Draw
+        if (multiPlayer.getOwner().getScore() > multiPlayer.getOpponent().getScore()) {
+
+        if (multiPlayer.getOwner().getScore() == multiPlayer.getOpponent().getScore()) {
+        }
+
+        } else if (multiPlayer.getOwner().getScore() < multiPlayer.getOpponent().getScore()) {
+
+        } else  {
+
         }
     }
 

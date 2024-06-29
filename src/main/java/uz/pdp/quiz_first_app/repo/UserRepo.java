@@ -13,5 +13,5 @@ public interface UserRepo extends JpaRepository<User, UUID> {
 
     boolean existsByEmail(String username);
 
-    List<User> findAllByIsStartedIsTrue();
+    List<User> findAllByIsStartedIsTrueAndIsConnectedIsFalse();
 }

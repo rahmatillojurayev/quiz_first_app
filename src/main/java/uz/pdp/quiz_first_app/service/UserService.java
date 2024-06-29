@@ -17,8 +17,8 @@ import uz.pdp.quiz_first_app.repo.RoleRepo;
 import uz.pdp.quiz_first_app.repo.UserRepo;
 import uz.pdp.quiz_first_app.security.CustomUserDetailsService;
 import uz.pdp.quiz_first_app.security.JwtUtil;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -82,11 +82,12 @@ public class UserService {
         String email = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepo.findByEmail(email).orElseThrow();
         user.setIsStarted(true);
+        user.setIsConnected(true);
         userRepo.save(user);
     }
 
     public List<User> getAllUsersWhoStartedGames() {
-        return userRepo.findAllByIsStartedIsTrue();
+        return userRepo.findAllByIsStartedIsTrueAndIsConnectedIsFalse();
     }
 
     public User getStartedUserTrue() {
@@ -96,6 +97,9 @@ public class UserService {
         }
         Random random = new Random();
         int randomIndex = random.nextInt(startedUsers.size());
-        return startedUsers.get(randomIndex);
+        User user = startedUsers.get(randomIndex);
+        user.setIsConnected(true);
+        userRepo.save(user);
+        return user;
     }
 }
