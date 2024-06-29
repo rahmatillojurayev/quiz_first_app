@@ -1,11 +1,16 @@
 package uz.pdp.quiz_first_app.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.pdp.quiz_first_app.dto.TokenDTO;
+import uz.pdp.quiz_first_app.dto.UsernameDTO;
 import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.entity.enums.RoleName;
 import uz.pdp.quiz_first_app.repo.RoleRepo;
@@ -23,6 +28,8 @@ public class UserService {
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepo roleRepo;
+    private final AuthenticationManager authenticationManager;
+    private final MessageService messageService;
 
     public TokenDTO updateUserLanguage(String lang) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -36,9 +43,11 @@ public class UserService {
     public void saveUser(String token) {
         String email = jwtUtil.getEmailFromToken(token);
         String password = jwtUtil.getPasswordFromToken(token);
+        String username = email.split("@")[0];
         User user = User.builder()
                 .email(email)
                 .password(passwordEncoder.encode(password))
+                .username(username)
                 .roles(List.of(roleRepo.findByRoleName(RoleName.ROLE_USER)))
                 .build();
         userRepo.save(user);
@@ -48,6 +57,21 @@ public class UserService {
         User user = userRepo.findByEmail(email).orElseThrow();
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepo.save(user);
+    }
+
+    public UserDetails getUserDetails(String email, String password) {
+        var token = new UsernamePasswordAuthenticationToken(email, password);
+        Authentication authenticate = authenticationManager.authenticate(token);
+        return (UserDetails) authenticate.getPrincipal();
+    }
+
+    public ResponseEntity<?> editUsername(UsernameDTO usernameDTO) {
+        String email = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepo.findByEmail(email).orElseThrow();
+        user.setUsername(usernameDTO.getUsername());
+        userRepo.save(user);
+        String message = messageService.getMessage("username.edited");
+        return ResponseEntity.ok(message);
     }
 
 }

@@ -3,9 +3,6 @@ package uz.pdp.quiz_first_app.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +21,6 @@ public class AuthService {
     private final EmailService emailService;
     private final MessageService messageService;
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
     public ResponseEntity<?> registerService(RegisterReq registerReq) {
@@ -55,9 +51,7 @@ public class AuthService {
 
     public ResponseEntity<?> logInAndReturnToken(LoginDTO loginDTO) {
         try {
-            var token = new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword());
-            Authentication authenticate = authenticationManager.authenticate(token);
-            UserDetails userDetails = (UserDetails) authenticate.getPrincipal();
+            UserDetails userDetails = userService.getUserDetails(loginDTO.getEmail(), loginDTO.getPassword());
             String lang = LocaleContextHolder.getLocale().getLanguage();
             TokenDTO tokenDTO = new TokenDTO(
                     "Bearer " + jwtUtil.generateToken(userDetails, lang),
