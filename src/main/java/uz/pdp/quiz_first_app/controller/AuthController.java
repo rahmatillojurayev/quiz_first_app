@@ -1,10 +1,13 @@
 package uz.pdp.quiz_first_app.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.quiz_first_app.dto.*;
 import uz.pdp.quiz_first_app.service.AuthService;
+import uz.pdp.quiz_first_app.service.TokenService;
 
 @RestController
 @RequiredArgsConstructor
@@ -12,10 +15,23 @@ import uz.pdp.quiz_first_app.service.AuthService;
 public class AuthController {
 
     private final AuthService authService;
+    private final TokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO loginDTO) {
         return authService.logInAndReturnToken(loginDTO);
+    }
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            String token = authHeader.substring(7);
+            tokenService.invalidateToken(token);
+            SecurityContextHolder.clearContext();
+        }else {
+            return ResponseEntity.badRequest().body("Invalid token");
+        }
+        return ResponseEntity.ok("Logout successful!");
     }
 
     @PostMapping("/register")
