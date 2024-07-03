@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import uz.pdp.quiz_first_app.dto.SingleGameDTO;
+import uz.pdp.quiz_first_app.dto.game.SingleGameDTO;
 import uz.pdp.quiz_first_app.entity.Category;
 import uz.pdp.quiz_first_app.entity.SingleGame;
 import uz.pdp.quiz_first_app.entity.User;
-import uz.pdp.quiz_first_app.repo.CategoryRepository;
+import uz.pdp.quiz_first_app.repo.CategoryRepo;
 import uz.pdp.quiz_first_app.repo.SingleGameRepo;
 import uz.pdp.quiz_first_app.repo.UserRepo;
 
@@ -20,7 +20,7 @@ public class SingleGameService {
 
     private final UserRepo userRepo;
     private final SingleGameRepo singleGameRepo;
-    private final CategoryRepository categoryRepository;
+    private final CategoryRepo categoryRepo;
 
     public ResponseEntity<?> createAndSave(SingleGameDTO singleGameDTO) {
         String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -36,6 +36,6 @@ public class SingleGameService {
     }
 
     public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+        return categoryRepo.findAll();
     }
 }

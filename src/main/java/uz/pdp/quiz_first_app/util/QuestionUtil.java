@@ -3,7 +3,7 @@ package uz.pdp.quiz_first_app.util;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
-import uz.pdp.quiz_first_app.dto.QuestionDTO;
+import uz.pdp.quiz_first_app.dto.game.QuestionDTO;
 import uz.pdp.quiz_first_app.entity.Question;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,6 @@
 package uz.pdp.quiz_first_app.filter;
 
-
 import java.io.IOException;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import uz.pdp.quiz_first_app.service.TokenService;
-
 
 public class TokenValidationFilter extends OncePerRequestFilter {
 
@@ -31,4 +28,5 @@ public class TokenValidationFilter extends OncePerRequestFilter {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid or missing token");
         }
     }
+
 }

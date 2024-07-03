@@ -9,17 +9,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uz.pdp.quiz_first_app.dto.TokenDTO;
+import uz.pdp.quiz_first_app.dto.auth.TokenDTO;
 import uz.pdp.quiz_first_app.dto.UsernameDTO;
 import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.entity.enums.RoleName;
 import uz.pdp.quiz_first_app.repo.RoleRepo;
 import uz.pdp.quiz_first_app.repo.UserRepo;
-import uz.pdp.quiz_first_app.security.CustomUserDetailsService;
-import uz.pdp.quiz_first_app.security.JwtUtil;
-
+import uz.pdp.quiz_first_app.config.security.CustomUserDetailsService;
+import uz.pdp.quiz_first_app.config.security.JwtUtil;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +49,7 @@ public class UserService {
                 .password(passwordEncoder.encode(password))
                 .username(username)
                 .roles(List.of(roleRepo.findByRoleName(RoleName.ROLE_USER)))
+                .userStatus("ONLINE")
                 .build();
         userRepo.save(user);
     }
@@ -68,38 +67,22 @@ public class UserService {
     }
 
     public ResponseEntity<?> editUsername(UsernameDTO usernameDTO) {
-        String email = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepo.findByEmail(email).orElseThrow();
+        User user = getCurrentUser();
         user.setUsername(usernameDTO.getUsername());
         userRepo.save(user);
         String message = messageService.getMessage("username.edited");
         return ResponseEntity.ok(message);
     }
-    
 
-
-    public void updateUser() {
-        String email = (String)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepo.findByEmail(email).orElseThrow();
-        user.setIsStarted(true);
-        user.setIsConnected(true);
-        userRepo.save(user);
+    public User getCurrentUser(){
+        String userEmail = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userRepo.findByEmail(userEmail).orElseThrow();
     }
 
-    public List<User> getAllUsersWhoStartedGames() {
-        return userRepo.findAllByIsStartedIsTrueAndIsConnectedIsFalse();
+    public ResponseEntity<?> changeUserStatus(String status) {
+        User user = getCurrentUser();
+        user.setUserStatus(status);
+        return ResponseEntity.ok(userRepo.save(user));
     }
 
-    public User getStartedUserTrue() {
-        List<User> startedUsers = getAllUsersWhoStartedGames();
-        if (startedUsers.isEmpty()) {
-            return null;
-        }
-        Random random = new Random();
-        int randomIndex = random.nextInt(startedUsers.size());
-        User user = startedUsers.get(randomIndex);
-        user.setIsConnected(true);
-        userRepo.save(user);
-        return user;
-    }
 }

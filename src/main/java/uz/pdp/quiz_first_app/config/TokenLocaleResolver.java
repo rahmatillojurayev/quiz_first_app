@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.web.servlet.LocaleResolver;
-import uz.pdp.quiz_first_app.security.JwtUtil;
+import uz.pdp.quiz_first_app.config.security.JwtUtil;
 import java.util.Locale;
 import java.util.Objects;
 

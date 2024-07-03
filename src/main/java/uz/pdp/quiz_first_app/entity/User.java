@@ -33,11 +33,7 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    private Integer score;
-
-    private Boolean isStarted = false;
-    private Boolean isFinished = false;
-    private Boolean isConnected = false;
+    private String userStatus;
 
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;

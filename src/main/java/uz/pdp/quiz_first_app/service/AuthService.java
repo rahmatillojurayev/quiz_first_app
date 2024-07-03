@@ -7,10 +7,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import uz.pdp.quiz_first_app.dto.*;
+import uz.pdp.quiz_first_app.dto.auth.*;
 import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.repo.UserRepo;
-import uz.pdp.quiz_first_app.security.JwtUtil;
+import uz.pdp.quiz_first_app.config.security.JwtUtil;
 
 @Service
 @RequiredArgsConstructor
