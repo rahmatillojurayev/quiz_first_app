@@ -6,6 +6,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import uz.pdp.quiz_first_app.dto.game.*;
 import uz.pdp.quiz_first_app.entity.*;
+import uz.pdp.quiz_first_app.projection.PlayerScoreProjection;
 import uz.pdp.quiz_first_app.repo.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -124,6 +125,10 @@ public class MultiplayerService {
         GameSession gameSession = gameSessionRepo.findById(gameSessionReq.getGameSessionId()).orElseThrow();
         gameSession.setStatus("FINISHED");
         gameSessionRepo.save(gameSession);
+        UUID player1GameSessionId = gameSession.getPlayer1GameSessionId();
+        UUID player2GameSessionId = gameSession.getPlayer2GameSessionId();
+        userRepo.updateUserStatusByPlayerId(player1GameSessionId, "ONLINE");
+        userRepo.updateUserStatusByPlayerId(player2GameSessionId, "ONLINE");
         return ResponseEntity.ok(gameSession);
     }
 
@@ -133,5 +138,10 @@ public class MultiplayerService {
         return ResponseEntity.ok(histories);
     }
 
+
+    public ResponseEntity<?> getLeaderBoard() {
+        List<PlayerScoreProjection> leaderBoard = gameSessionRepo.getLeaderBoard();
+        return ResponseEntity.ok(leaderBoard);
+    }
 
 }

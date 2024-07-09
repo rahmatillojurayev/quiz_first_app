@@ -10,7 +10,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.pdp.quiz_first_app.dto.auth.TokenDTO;
-import uz.pdp.quiz_first_app.dto.UsernameDTO;
+import uz.pdp.quiz_first_app.dto.settings.PhotoReq;
+import uz.pdp.quiz_first_app.dto.settings.UsernameDTO;
 import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.entity.enums.RoleName;
 import uz.pdp.quiz_first_app.repo.RoleRepo;
@@ -83,6 +84,13 @@ public class UserService {
         User user = getCurrentUser();
         user.setUserStatus(status);
         return ResponseEntity.ok(userRepo.save(user));
+    }
+
+    public ResponseEntity<?> updateAvatar(PhotoReq photoReq) {
+        User currentUser = getCurrentUser();
+        currentUser.setPhotoPath(photoReq.getPhotoUrl());
+        userRepo.save(currentUser);
+        return ResponseEntity.ok(currentUser);
     }
 
 }

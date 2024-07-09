@@ -23,4 +23,9 @@ public class MultiplayerController {
         return multiplayerService.getMatchHistories();
     }
 
+    @GetMapping("/leaderboard")
+    public ResponseEntity<?> getLeaderBoard(){
+        return multiplayerService.getLeaderBoard();
+    }
+
 }

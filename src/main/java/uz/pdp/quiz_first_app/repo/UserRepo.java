@@ -1,6 +1,8 @@
 package uz.pdp.quiz_first_app.repo;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import uz.pdp.quiz_first_app.entity.User;
 import java.util.List;
@@ -15,9 +17,19 @@ public interface UserRepo extends JpaRepository<User, UUID> {
 
     @Query(value = """
                     select u.* from users u
-                    join user_status us on us.id = u.user_status_id
-                    where u.id <> :userId and us.status ilike 'searching'
+                    where u.id <> :userId and u.user_status ilike 'SEARCHING'
                     """, nativeQuery = true)
     List<User> findSearchingUsers(UUID userId);
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+        update users u
+        set user_status = :status
+        where u.id = (
+            select pgs.user_id from player_game_session pgs where pgs.id = :playerId
+        )
+    """, nativeQuery = true)
+    void updateUserStatusByPlayerId(UUID playerId, String status);
 
 }

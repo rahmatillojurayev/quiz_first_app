@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import uz.pdp.quiz_first_app.dto.auth.TokenDTO;
-import uz.pdp.quiz_first_app.dto.UsernameDTO;
+import uz.pdp.quiz_first_app.dto.settings.PhotoReq;
+import uz.pdp.quiz_first_app.dto.settings.UsernameDTO;
 import uz.pdp.quiz_first_app.service.UserService;
 
 @RestController
@@ -23,6 +24,11 @@ public class SettingsController {
     @PostMapping
     public ResponseEntity<?> updateUsername(@RequestBody UsernameDTO usernameDTO) {
         return userService.editUsername(usernameDTO);
+    }
+
+    @PostMapping("/avatar")
+    public ResponseEntity<?> updateAvatar(@RequestBody PhotoReq photoReq) {
+        return userService.updateAvatar(photoReq);
     }
 
 }
