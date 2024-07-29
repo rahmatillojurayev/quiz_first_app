@@ -12,6 +12,8 @@ import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.repo.UserRepo;
 import uz.pdp.quiz_first_app.config.security.JwtUtil;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -104,6 +106,25 @@ public class AuthService {
             String message = messageService.getMessage("reset.password.success");
             userService.editUserPassword(emailFromToken, newPassword.getPassword());
             return ResponseEntity.ok().body(message);
+        }
+    }
+
+    public ResponseEntity<?> validateAndReturnTokens(String refreshToken) {
+        if (jwtUtil.validateToken(refreshToken)) {
+            String email = jwtUtil.getUsername(refreshToken);
+            String lang = jwtUtil.getLang(refreshToken);
+            Optional<User> userOptional = userRepo.findByEmail(email);
+            if(userOptional.isPresent()) {
+                UserDetails userDetails = userOptional.get();
+                TokenDTO tokenDTO = new TokenDTO(
+                        "Bearer " + jwtUtil.generateToken(userDetails, lang),
+                        "Bearer " + jwtUtil.generateRefreshToken(userDetails, lang)
+                );
+                return ResponseEntity.ok().body(tokenDTO);
+            }
+            return ResponseEntity.badRequest().body("User not found");
+        }else{
+            return ResponseEntity.badRequest().body("Invalid refresh token");
         }
     }
 

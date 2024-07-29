@@ -1,14 +1,15 @@
 package uz.pdp.quiz_first_app.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
+@AllArgsConstructor
 public class TokenService {
 
-    private final Set<String> invalidatedTokens = new HashSet<>();
+    private Set<String> invalidatedTokens = new HashSet<>();
 
     public void invalidateToken(String token) {
         invalidatedTokens.add(token);
@@ -17,4 +18,5 @@ public class TokenService {
     public boolean isTokenValid(String token) {
         return !invalidatedTokens.contains(token);
     }
+
 }

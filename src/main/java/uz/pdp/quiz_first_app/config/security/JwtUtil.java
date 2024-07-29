@@ -1,8 +1,6 @@
 package uz.pdp.quiz_first_app.config.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,17 +9,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import uz.pdp.quiz_first_app.dto.auth.RegisterReq;
 import javax.crypto.SecretKey;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
 public class JwtUtil {
 
     private static final String SECRET_KEY = "1234567812345678123456781234567812345678123456781234567812345678";
-    private static final long ACCESS_TOKEN_VALIDITY = 2000 * 60 * 60; // 1 hour
-    private static final long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24; // 1 day
+    private static final long ACCESS_TOKEN_VALIDITY = 1000 * 60 * 60 * 24;
+    private static final long REFRESH_TOKEN_VALIDITY = 1000 * 60 * 60 * 24 * 7;
 
     public boolean validateToken(String token) {
         try {
@@ -45,7 +41,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(decode);
     }
 
-    public String getUserName(String token) {
+    public String getUsername(String token) {
         return getClaims(token).getSubject();
     }
 

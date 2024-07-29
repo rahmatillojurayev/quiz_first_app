@@ -1,20 +1,29 @@
 package uz.pdp.quiz_first_app.service;
 
-import lombok.RequiredArgsConstructor;
+import lombok.*;
+import jakarta.annotation.PostConstruct;
 import org.springframework.core.io.*;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import uz.pdp.quiz_first_app.dto.settings.PhotoDTO;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.*;
 import java.util.*;
 
 @Service
+@AllArgsConstructor
 @RequiredArgsConstructor
 public class PhotoService {
 
-    private final Path photosPath = Paths.get("C:/Users/user/IdeaProjects/modul 9/quiz_first_app/files/photos").toAbsolutePath().normalize();
+    private String photoFilePath;
+    private Path photosPath;
+
+    @PostConstruct
+    public void init() {
+        String currentDir = System.getProperty("user.dir");
+        photoFilePath = currentDir + "/files/photos";
+        photosPath = Paths.get(photoFilePath).toAbsolutePath().normalize();
+    }
 
     public ResponseEntity<?> getAllPhotos() {
         List<PhotoDTO> photos = new ArrayList<>();
@@ -34,20 +43,17 @@ public class PhotoService {
         return ResponseEntity.ok(photos);
     }
 
+    @SneakyThrows
     public ResponseEntity<?> getPhoto(String photoName) {
-        try {
-            Path filePath = photosPath.resolve(photoName).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-            if (resource.exists()) {
-                byte[] fileContent = Files.readAllBytes(filePath);
-                String encodedContent = Base64.getEncoder().encodeToString(fileContent);
-                PhotoDTO photoDTO = new PhotoDTO(photoName, "/api/photos/" + photoName, encodedContent);
-                return ResponseEntity.ok(photoDTO);
-            } else {
-                throw new RuntimeException("Photo not found: " + photoName);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Error reading photo: " + photoName, e);
+        Path filePath = photosPath.resolve(photoName).normalize();
+        Resource resource = new UrlResource(filePath.toUri());
+        if (resource.exists()) {
+            byte[] fileContent = Files.readAllBytes(filePath);
+            String encodedContent = Base64.getEncoder().encodeToString(fileContent);
+            PhotoDTO photoDTO = new PhotoDTO(photoName, "/api/photos/" + photoName, encodedContent);
+            return ResponseEntity.ok(photoDTO);
+        } else {
+            throw new RuntimeException("Photo not found: " + photoName);
         }
     }
 

@@ -10,5 +10,4 @@ public interface RawGameSessionData {
     Integer getPlayer2Score();
     UUID getPlayer1Id();
     UUID getPlayer2Id();
-
 }

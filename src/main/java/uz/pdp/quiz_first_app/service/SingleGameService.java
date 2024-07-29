@@ -2,31 +2,25 @@ package uz.pdp.quiz_first_app.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import uz.pdp.quiz_first_app.dto.game.SingleGameDTO;
-import uz.pdp.quiz_first_app.entity.Category;
-import uz.pdp.quiz_first_app.entity.SingleGame;
-import uz.pdp.quiz_first_app.entity.User;
-import uz.pdp.quiz_first_app.repo.CategoryRepo;
-import uz.pdp.quiz_first_app.repo.SingleGameRepo;
-import uz.pdp.quiz_first_app.repo.UserRepo;
-
+import uz.pdp.quiz_first_app.entity.*;
+import uz.pdp.quiz_first_app.repo.*;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class SingleGameService {
 
-    private final UserRepo userRepo;
     private final SingleGameRepo singleGameRepo;
     private final CategoryRepo categoryRepo;
+    private final UserService userService;
+    private final QuestionService questionService;
 
     public ResponseEntity<?> createAndSave(SingleGameDTO singleGameDTO) {
-        String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = userRepo.findByEmail(principal).orElseThrow();
+        User currentUser = userService.getCurrentUser();
         SingleGame singleGame = SingleGame.builder()
-                .user(user)
+                .user(currentUser)
                 .score(singleGameDTO.getScore())
                 .correctAnswers(singleGameDTO.getCorrectAnswers())
                 .wrongAnswers(singleGameDTO.getWrongAnswers())
@@ -38,4 +32,9 @@ public class SingleGameService {
     public List<Category> getAllCategories() {
         return categoryRepo.findAll();
     }
+
+    public ResponseEntity<?> getQuestions(Integer categoryId) {
+        return questionService.generateQuestions(categoryId);
+    }
+
 }

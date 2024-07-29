@@ -6,6 +6,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import uz.pdp.quiz_first_app.dto.game.*;
 import uz.pdp.quiz_first_app.entity.*;
+import uz.pdp.quiz_first_app.projection.HistoryProjection;
 import uz.pdp.quiz_first_app.projection.PlayerScoreProjection;
 import uz.pdp.quiz_first_app.repo.*;
 import java.util.*;
@@ -127,17 +128,18 @@ public class MultiplayerService {
         gameSessionRepo.save(gameSession);
         UUID player1GameSessionId = gameSession.getPlayer1GameSessionId();
         UUID player2GameSessionId = gameSession.getPlayer2GameSessionId();
-        userRepo.updateUserStatusByPlayerId(player1GameSessionId, "ONLINE");
-        userRepo.updateUserStatusByPlayerId(player2GameSessionId, "ONLINE");
+        playerGameSessionService.updatePlayerScore(player1GameSessionId, player2GameSessionId);
+        playerGameSessionService.updatePlayersStatus(player1GameSessionId, player2GameSessionId);
         return ResponseEntity.ok(gameSession);
     }
 
     public ResponseEntity<?> getMatchHistories() {
         User user = userService.getCurrentUser();
         var histories = gameSessionService.getUserHistory(user.getId());
-        return ResponseEntity.ok(histories);
+        int totalScore = histories.stream().mapToInt(HistoryProjection::getYourScore).sum();
+        MatchHistoryDTO matchHistoryDTO = new MatchHistoryDTO(totalScore, histories);
+        return ResponseEntity.ok(matchHistoryDTO);
     }
-
 
     public ResponseEntity<?> getLeaderBoard() {
         List<PlayerScoreProjection> leaderBoard = gameSessionRepo.getLeaderBoard();

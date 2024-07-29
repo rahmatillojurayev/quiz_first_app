@@ -6,5 +6,5 @@ public interface HistoryProjection {
     String getOpponent();
     Integer getYourScore();
     Integer getOpponentScore();
-
+    Boolean getWin();
 }

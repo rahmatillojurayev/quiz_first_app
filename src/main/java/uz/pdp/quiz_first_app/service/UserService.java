@@ -2,22 +2,18 @@ package uz.pdp.quiz_first_app.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import uz.pdp.quiz_first_app.dto.auth.TokenDTO;
-import uz.pdp.quiz_first_app.dto.settings.PhotoReq;
-import uz.pdp.quiz_first_app.dto.settings.UsernameDTO;
+import uz.pdp.quiz_first_app.dto.settings.*;
 import uz.pdp.quiz_first_app.entity.User;
 import uz.pdp.quiz_first_app.entity.enums.RoleName;
-import uz.pdp.quiz_first_app.repo.RoleRepo;
-import uz.pdp.quiz_first_app.repo.UserRepo;
-import uz.pdp.quiz_first_app.config.security.CustomUserDetailsService;
-import uz.pdp.quiz_first_app.config.security.JwtUtil;
+import uz.pdp.quiz_first_app.repo.*;
+import uz.pdp.quiz_first_app.config.security.*;
 import java.util.List;
 
 @Service
